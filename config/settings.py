@@ -7,12 +7,30 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 load_dotenv(BASE_DIR / ".env")
 
+
+
+def env_bool(name, default=False):
+
+    raw = os.environ.get(name)
+    if raw is None:
+        return default
+
+    return raw.strip().lower() in ("1", "true", "yes")
+
+
+def env_list(name):
+    raw = os.environ.get(name, "")
+
+    return [item.strip() for item in raw.split(",") if item.strip()]
+
+
 SECRET_KEY = os.environ["SECRET_KEY"]
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env_bool("DEBUG", default=False)
 
-ALLOWED_HOSTS = []
+
+ALLOWED_HOSTS = env_list("ALLOWED_HOSTS")
 
 
 # Application definition
@@ -45,7 +63,7 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / "templates"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -95,7 +113,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = "Asia/Tehran"
 
 USE_I18N = True
 
@@ -118,3 +136,10 @@ MAILERS = {
 }
 
 AUTH_USER_MODEL = "accounts.User"
+
+STATIC_URL = "static/"
+
+
+STATICFILES_DIRS = [BASE_DIR / "static"]
+
+STATIC_ROOT = BASE_DIR / "staticfiles"
